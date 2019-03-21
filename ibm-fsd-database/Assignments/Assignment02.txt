@@ -1,0 +1,54 @@
+1:LIST NUMBER OF EMPLOYEES UNDER EACH MANAGER 
+
+    SELECT CONCAT(m.lastname, ' ', m.firstname) AS "manager",count(*) AS noofemployees
+    FROM employees AS e JOIN
+    employees m ON m.employeeNumber = e.reportsTo
+    group by manager
+    order by noofemployees;
+
+
+2:LIST CUSTOMER WISE UNIQUE PRODUCTS ORDERED 
+
+
+select  distinct p.productName , c.customerName
+from customers  c join
+orders  o 
+on c.customerNumber=o.customerNumber
+join orderdetails as od 
+on od.orderNumber=o.orderNumber  join
+ products  p on p.productCode=od.productCode
+order by c.customerName;
+
+
+
+3:LIST PRODUCT WISE TOTAL ORDER AMOUNT
+
+	SELECT pr.productName, SUM(priceEach) AS sum
+	FROM orderdetails AS od,products AS pr
+	WHERE od.productCode=pr.productCode
+	group by od.productCode
+	ORDER BY sum;
+
+4:LIST DETAILS OF MANAGERS WHO HAS HIGHEST SALES
+
+select CONCAT(e.lastname, ' ', e.firstname) AS "manager",count(*) AS a
+from employees AS e join customers c on e.employeeNumber=c.salesRepEmployeeNumber
+group by manager
+order by a DESC
+limit 5;
+
+
+5:LIST MONTH WISE NO OF ORDERS PLACED FOR EACH PRODUCTLINE
+
+SELECT MONTH(orderDate) month,ceil(SUM(quantityOrdered * priceEach)) total,p.productLine
+FROM orders o JOIN
+orderdetails od on o.orderNumber=od.orderNumber join products p on od.productCode=p.productCode
+GROUP BY month,p.productLine;
+
+
+6:LIST CUSTOMERS WHO HAS NOT PLACED ANY ORDER FOR ALL PRODUCTS
+
+SELECT customerName
+FROM customers JOIN orders
+where  EXISTS(select * from orders where customers.customerNumber=orders.customerNumber);
+
